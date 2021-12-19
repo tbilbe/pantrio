@@ -1,0 +1,17 @@
+swagger: "2.0"
+
+info:
+  version: 1.0.0
+  title: pantrio-backend
+
+definitions:
+  testModel:
+    type: object
+    required:
+      - name
+      - age
+    properties:
+      name:
+        type: string
+      age:
+        type: number

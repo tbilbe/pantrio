@@ -1,0 +1,17 @@
+/lib
+/dist
+.*/
+.*
+*.feature
+*.mock
+coverage/
+sonar-project.properties
+*.png
+*.svg
+TODO.md
+*.log
+/cdk.out
+/test
+/tools
+*.sh
+swagger-codegen-cli.jar
