@@ -1,6 +1,6 @@
 # pantrio backend typescript
 
-backend component to the mobile application to create shopping lists from recipes
+backend component to the mobile application to a react native application
 
 ### key tech
 
