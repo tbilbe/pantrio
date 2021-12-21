@@ -89,7 +89,7 @@
                 <canvas id="test-suites-canvas" width="100" height="100"></canvas>
                 <h2>Test Suites</h2>
                 <div class="list-group">
-                    <p id="test-suites-results" class="list-group-item list-group-item-action">0 passed, 1 total</p>
+                    <p id="test-suites-results" class="list-group-item list-group-item-action">1 passed, 1 total</p>
                 </div>
             </div>
             <!-- /.col-lg-4 -->
@@ -97,7 +97,7 @@
                 <canvas id="tests-canvas" width="100" height="100"></canvas>
                 <h2>Tests</h2>
                 <div class="list-group">
-                    <p id="tests-results" class="list-group-item list-group-item-action">0 passed, 0 total</p>
+                    <p id="tests-results" class="list-group-item list-group-item-action">1 passed, 3 total</p>
                 </div>
             </div>
             <!-- /.col-lg-4 -->
@@ -121,7 +121,6 @@
   &quot;resultDir&quot;: &quot;.&#x2F;test&#x2F;jest-stare&#x2F;&quot;,
   &quot;coverageLink&quot;: &quot;..&#x2F;coverage&#x2F;lcov-report&#x2F;index.html&quot;,
   &quot;additionalResultsProcessors&quot;: [],
-  &quot;log&quot;: false,
   &quot;resultHtml&quot;: &quot;index.html&quot;,
   &quot;resultJson&quot;: &quot;jest-results.json&quot;
 }</div>
@@ -129,14 +128,14 @@
             <div class="d-none" id="test-results">{
   &quot;numFailedTestSuites&quot;: 0,
   &quot;numFailedTests&quot;: 0,
-  &quot;numPassedTestSuites&quot;: 0,
-  &quot;numPassedTests&quot;: 0,
+  &quot;numPassedTestSuites&quot;: 1,
+  &quot;numPassedTests&quot;: 1,
   &quot;numPendingTestSuites&quot;: 0,
-  &quot;numPendingTests&quot;: 0,
+  &quot;numPendingTests&quot;: 2,
   &quot;numRuntimeErrorTestSuites&quot;: 0,
   &quot;numTodoTests&quot;: 0,
   &quot;numTotalTestSuites&quot;: 1,
-  &quot;numTotalTests&quot;: 0,
+  &quot;numTotalTests&quot;: 3,
   &quot;openHandles&quot;: [],
   &quot;snapshot&quot;: {
     &quot;added&quot;: 0,
@@ -154,9 +153,74 @@
     &quot;unmatched&quot;: 0,
     &quot;updated&quot;: 0
   },
-  &quot;startTime&quot;: 1639777813162,
+  &quot;startTime&quot;: 1640129838537,
   &quot;success&quot;: false,
-  &quot;testResults&quot;: [],
+  &quot;testResults&quot;: [
+    {
+      &quot;leaks&quot;: false,
+      &quot;numFailingTests&quot;: 0,
+      &quot;numPassingTests&quot;: 1,
+      &quot;numPendingTests&quot;: 2,
+      &quot;numTodoTests&quot;: 0,
+      &quot;openHandles&quot;: [],
+      &quot;perfStats&quot;: {
+        &quot;end&quot;: 1640129849023,
+        &quot;runtime&quot;: 10174,
+        &quot;slow&quot;: true,
+        &quot;start&quot;: 1640129838849
+      },
+      &quot;skipped&quot;: false,
+      &quot;snapshot&quot;: {
+        &quot;added&quot;: 0,
+        &quot;fileDeleted&quot;: false,
+        &quot;matched&quot;: 0,
+        &quot;unchecked&quot;: 0,
+        &quot;uncheckedKeys&quot;: [],
+        &quot;unmatched&quot;: 0,
+        &quot;updated&quot;: 0
+      },
+      &quot;testFilePath&quot;: &quot;&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio&#x2F;src&#x2F;handlers&#x2F;events&#x2F;recipe-image&#x2F;raw-recipe-image-event.unit.test.ts&quot;,
+      &quot;testResults&quot;: [
+        {
+          &quot;ancestorTitles&quot;: [],
+          &quot;duration&quot;: null,
+          &quot;failureDetails&quot;: [],
+          &quot;failureMessages&quot;: [],
+          &quot;fullName&quot;: &quot;GIVEN the handler receives an s3 event\nWHEN s3 fails load to the file\nTHEN the handler throws&quot;,
+          &quot;invocations&quot;: 1,
+          &quot;location&quot;: null,
+          &quot;numPassingAsserts&quot;: 0,
+          &quot;status&quot;: &quot;pending&quot;,
+          &quot;title&quot;: &quot;GIVEN the handler receives an s3 event\nWHEN s3 fails load to the file\nTHEN the handler throws&quot;
+        },
+        {
+          &quot;ancestorTitles&quot;: [],
+          &quot;duration&quot;: null,
+          &quot;failureDetails&quot;: [],
+          &quot;failureMessages&quot;: [],
+          &quot;fullName&quot;: &quot;GIVEN the handler receives an s3 event\nWHEN textract fails to receive the image\nTHEN the handler throws an error&quot;,
+          &quot;invocations&quot;: 1,
+          &quot;location&quot;: null,
+          &quot;numPassingAsserts&quot;: 0,
+          &quot;status&quot;: &quot;pending&quot;,
+          &quot;title&quot;: &quot;GIVEN the handler receives an s3 event\nWHEN textract fails to receive the image\nTHEN the handler throws an error&quot;
+        },
+        {
+          &quot;ancestorTitles&quot;: [],
+          &quot;duration&quot;: 72,
+          &quot;failureDetails&quot;: [],
+          &quot;failureMessages&quot;: [],
+          &quot;fullName&quot;: &quot;GIVEN the handler receives an s3 event\nWHEN textract detects RECIPE text\nTHEN the handler completes successfully&quot;,
+          &quot;invocations&quot;: 1,
+          &quot;location&quot;: null,
+          &quot;numPassingAsserts&quot;: 0,
+          &quot;status&quot;: &quot;passed&quot;,
+          &quot;title&quot;: &quot;GIVEN the handler receives an s3 event\nWHEN textract detects RECIPE text\nTHEN the handler completes successfully&quot;
+        }
+      ],
+      &quot;failureMessage&quot;: null
+    }
+  ],
   &quot;wasInterrupted&quot;: false
 }</div>
         </div>
@@ -169,7 +233,7 @@
     &quot;cdk&#x2F;**&#x2F;*.ts&quot;,
     &quot;!**&#x2F;test&#x2F;**&#x2F;*&quot;
   ],
-  &quot;coverageDirectory&quot;: &quot;&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio-backend&#x2F;test&#x2F;coverage&quot;,
+  &quot;coverageDirectory&quot;: &quot;&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio&#x2F;test&#x2F;coverage&quot;,
   &quot;coverageProvider&quot;: &quot;babel&quot;,
   &quot;coverageReporters&quot;: [
     &quot;text&quot;,
@@ -196,10 +260,10 @@
   &quot;listTests&quot;: false,
   &quot;logHeapUsage&quot;: false,
   &quot;maxConcurrency&quot;: 5,
-  &quot;maxWorkers&quot;: 1,
+  &quot;maxWorkers&quot;: 11,
   &quot;noStackTrace&quot;: false,
   &quot;nonFlagArgs&quot;: [
-    &quot;&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio-backend&#x2F;src&#x2F;handlers&#x2F;events&#x2F;recipe-image&#x2F;raw-recipe-image-event.unit.test.ts&quot;
+    &quot;&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio&#x2F;src&#x2F;handlers&#x2F;events&#x2F;recipe-image&#x2F;raw-recipe-image-event.unit.test.ts&quot;
   ],
   &quot;notify&quot;: false,
   &quot;notifyMode&quot;: &quot;failure-change&quot;,
@@ -213,24 +277,23 @@
       {}
     ],
     [
-      &quot;&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio-backend&#x2F;node_modules&#x2F;jest-stare&#x2F;lib&#x2F;index.js&quot;,
+      &quot;&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio&#x2F;node_modules&#x2F;jest-stare&#x2F;lib&#x2F;index.js&quot;,
       {
         &quot;resultDir&quot;: &quot;.&#x2F;test&#x2F;jest-stare&#x2F;&quot;,
         &quot;coverageLink&quot;: &quot;..&#x2F;coverage&#x2F;lcov-report&#x2F;index.html&quot;,
         &quot;additionalResultsProcessors&quot;: [],
-        &quot;log&quot;: false,
         &quot;resultHtml&quot;: &quot;index.html&quot;,
         &quot;resultJson&quot;: &quot;jest-results.json&quot;
       }
     ]
   ],
-  &quot;rootDir&quot;: &quot;&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio-backend&quot;,
+  &quot;rootDir&quot;: &quot;&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio&quot;,
   &quot;runTestsByPath&quot;: false,
   &quot;skipFilter&quot;: false,
   &quot;testFailureExitCode&quot;: 1,
   &quot;testNamePattern&quot;: &quot;GIVEN the handler receives an s3 event\nWHEN textract detects RECIPE text\nTHEN the handler completes successfully&quot;,
-  &quot;testPathPattern&quot;: &quot;&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio-backend&#x2F;src&#x2F;handlers&#x2F;events&#x2F;recipe-image&#x2F;raw-recipe-image-event.unit.test.ts&quot;,
-  &quot;testSequencer&quot;: &quot;&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio-backend&#x2F;node_modules&#x2F;jest-config&#x2F;node_modules&#x2F;@jest&#x2F;test-sequencer&#x2F;build&#x2F;index.js&quot;,
+  &quot;testPathPattern&quot;: &quot;&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio&#x2F;src&#x2F;handlers&#x2F;events&#x2F;recipe-image&#x2F;raw-recipe-image-event.unit.test.ts&quot;,
+  &quot;testSequencer&quot;: &quot;&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio&#x2F;node_modules&#x2F;jest-config&#x2F;node_modules&#x2F;@jest&#x2F;test-sequencer&#x2F;build&#x2F;index.js&quot;,
   &quot;updateSnapshot&quot;: &quot;new&quot;,
   &quot;useStderr&quot;: false,
   &quot;verbose&quot;: true,
