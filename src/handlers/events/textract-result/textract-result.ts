@@ -1,9 +1,7 @@
-import { SNSHandler } from 'aws-lambda';
+import { DynamoDBStreamHandler } from '~types/aws-lambda';
 
-export const handler: SNSHandler = (event) => {
+export const handler: DynamoDBStreamHandler = (event) => {
     try {
         console.log('event', JSON.stringify(event, null, 4));
-        let JobId = '';
-        JobId = event['Records'][0]['Sns']['Message'];
     } catch (error) {}
 };

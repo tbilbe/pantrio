@@ -1,4 +1,4 @@
-import { s3Client } from '@helpers/s3';
+import { s3Client } from '~helpers/s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
 import { GetObjectCommand, GetObjectCommandInput } from '@aws-sdk/client-s3';

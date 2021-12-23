@@ -1,11 +1,6 @@
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import {
-    DetectDocumentTextCommand,
-    GetDocumentTextDetectionCommand,
-    StartDocumentTextDetectionCommand,
-    TextractClient,
-    TextType,
-} from '@aws-sdk/client-textract';
+import { DetectDocumentTextCommand, TextractClient } from '@aws-sdk/client-textract';
+import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
 import { BlockType } from '@briancullen/aws-textract-parser';
 import { S3Event, S3EventRecord } from 'aws-lambda';
 import { mockClient } from 'aws-sdk-client-mock';
@@ -14,11 +9,14 @@ import { handler } from './raw-recipe-image-event';
 
 const s3ClientMock = mockClient(S3Client);
 const textractClientMock = mockClient(TextractClient);
+const dynamoDocMock = mockClient(DynamoDBDocumentClient);
 
 beforeEach(() => {
     s3ClientMock.reset();
     textractClientMock.reset();
     textractClientMock.resolves({});
+    dynamoDocMock.reset();
+    dynamoDocMock.resolves({});
 });
 
 test(`GIVEN the handler receives an s3 event
@@ -51,11 +49,7 @@ THEN the handler completes successfully`, async () => {
         })
         .resolves({ Blocks: [{ BlockType: 'LINE', Text: 'PLEASE FUCKING WORK!' }] });
 
-    console.log('🚀', textractClientMock.commandCalls(DetectDocumentTextCommand));
-    // .on(GetDocumentTextDetectionCommand, {
-    //     JobId: '1',
-    // })
-    // .resolves({ Blocks: [{ BlockType: 'LINE', Text: 'PLEASE FUCKING WORK!' }] });
+    // console.log('🚀', textractClientMock.commandCalls(DetectDocumentTextCommand));
 
     const mockEvent = mockDeep<S3Event>({
         Records: [
@@ -65,5 +59,6 @@ THEN the handler completes successfully`, async () => {
         ],
     });
 
-    await expect(handler(mockEvent, mock(), mock())).rejects.toThrow();
+    await expect(handler(mockEvent, mock(), mock())).resolves.not.toThrow();
+    expect(dynamoDocMock.commandCalls(PutCommand).length).toBe(1);
 });
