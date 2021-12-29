@@ -38,9 +38,6 @@ export const handler: S3Handler = async (event) => {
 
         console.log('🚧 ->', results);
 
-        // const tParse = textractParser.parseDetectTextResponse(textractResponse) ?? null;
-        // console.log('got the doc here! -> tParse: ', tParse);
-
         const userIdInHereMaybe = object.key;
 
         const dynamoItem = {

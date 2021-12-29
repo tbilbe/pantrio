@@ -8,8 +8,8 @@ const app = new cdk.App();
 const stackProps: PantrioStackProps = {
     stage: 'dev',
     env: {
-        account: process.env.CDK_DEFAULT_ACCOUNT ?? '',
-        region: process.env.CDK_DEFAULT_REGION ?? '',
+        account: '110308496740',
+        region: 'eu-west-1',
     },
 };
 

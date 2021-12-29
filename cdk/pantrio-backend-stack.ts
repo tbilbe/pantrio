@@ -88,7 +88,11 @@ export class PantrioBackendStack extends cdk.Stack {
             entry: path.join(__dirname, `/../src/handlers/http/get-stored-textract-result/index.ts`),
         });
 
-        const api = new apigateway.RestApi(this, 'PantrioApi');
+        const api = new apigateway.RestApi(this, 'PantrioApi', {
+            restApiName: 'Recipe Service',
+            description: 'this service provides access to recipe storage and parsing',
+        });
+
         api.root.addResource('s3').addMethod('GET', new apigateway.LambdaIntegration(getSignedUrlToStoreRawImage));
         api.root.addResource('recipe').addMethod('GET', new apigateway.LambdaIntegration(getStoredTextractResult));
     }

@@ -97,7 +97,7 @@
                 <canvas id="tests-canvas" width="100" height="100"></canvas>
                 <h2>Tests</h2>
                 <div class="list-group">
-                    <p id="tests-results" class="list-group-item list-group-item-action">0 passed, 0 total</p>
+                    <p id="tests-results" class="list-group-item list-group-item-action">0 passed, 1 total</p>
                 </div>
             </div>
             <!-- /.col-lg-4 -->
@@ -121,14 +121,13 @@
   &quot;resultDir&quot;: &quot;.&#x2F;test&#x2F;jest-stare&#x2F;&quot;,
   &quot;coverageLink&quot;: &quot;..&#x2F;coverage&#x2F;lcov-report&#x2F;index.html&quot;,
   &quot;additionalResultsProcessors&quot;: [],
-  &quot;log&quot;: false,
   &quot;resultHtml&quot;: &quot;index.html&quot;,
   &quot;resultJson&quot;: &quot;jest-results.json&quot;
 }</div>
         <div id="accordion">
             <div class="d-none" id="test-results">{
-  &quot;numFailedTestSuites&quot;: 0,
-  &quot;numFailedTests&quot;: 0,
+  &quot;numFailedTestSuites&quot;: 1,
+  &quot;numFailedTests&quot;: 1,
   &quot;numPassedTestSuites&quot;: 0,
   &quot;numPassedTests&quot;: 0,
   &quot;numPendingTestSuites&quot;: 0,
@@ -136,7 +135,7 @@
   &quot;numRuntimeErrorTestSuites&quot;: 0,
   &quot;numTodoTests&quot;: 0,
   &quot;numTotalTestSuites&quot;: 1,
-  &quot;numTotalTests&quot;: 0,
+  &quot;numTotalTests&quot;: 1,
   &quot;openHandles&quot;: [],
   &quot;snapshot&quot;: {
     &quot;added&quot;: 0,
@@ -154,9 +153,69 @@
     &quot;unmatched&quot;: 0,
     &quot;updated&quot;: 0
   },
-  &quot;startTime&quot;: 1640174880086,
+  &quot;startTime&quot;: 1640776052000,
   &quot;success&quot;: false,
-  &quot;testResults&quot;: [],
+  &quot;testResults&quot;: [
+    {
+      &quot;leaks&quot;: false,
+      &quot;numFailingTests&quot;: 1,
+      &quot;numPassingTests&quot;: 0,
+      &quot;numPendingTests&quot;: 0,
+      &quot;numTodoTests&quot;: 0,
+      &quot;openHandles&quot;: [],
+      &quot;perfStats&quot;: {
+        &quot;end&quot;: 1640776064105,
+        &quot;runtime&quot;: 11795,
+        &quot;slow&quot;: true,
+        &quot;start&quot;: 1640776052310
+      },
+      &quot;skipped&quot;: false,
+      &quot;snapshot&quot;: {
+        &quot;added&quot;: 0,
+        &quot;fileDeleted&quot;: false,
+        &quot;matched&quot;: 0,
+        &quot;unchecked&quot;: 0,
+        &quot;uncheckedKeys&quot;: [],
+        &quot;unmatched&quot;: 0,
+        &quot;updated&quot;: 0
+      },
+      &quot;testFilePath&quot;: &quot;&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio&#x2F;cdk&#x2F;pantrio-backend-stack.unit.test.ts&quot;,
+      &quot;testResults&quot;: [
+        {
+          &quot;ancestorTitles&quot;: [],
+          &quot;duration&quot;: 1,
+          &quot;failureDetails&quot;: [
+            {
+              &quot;errno&quot;: -2,
+              &quot;code&quot;: &quot;ENOENT&quot;,
+              &quot;syscall&quot;: &quot;spawnSync docker&quot;,
+              &quot;path&quot;: &quot;docker&quot;,
+              &quot;spawnargs&quot;: [
+                &quot;build&quot;,
+                &quot;-t&quot;,
+                &quot;cdk-1dfa59a9825664eec8a36d3be2a0ed701919e1652d28fc45385388c8fb7865ea&quot;,
+                &quot;--build-arg&quot;,
+                &quot;IMAGE&#x3D;public.ecr.aws&#x2F;sam&#x2F;build-nodejs14.x&quot;,
+                &quot;--build-arg&quot;,
+                &quot;ESBUILD_VERSION&#x3D;0&quot;,
+                &quot;&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio&#x2F;node_modules&#x2F;@aws-cdk&#x2F;aws-lambda-nodejs&#x2F;lib&quot;
+              ]
+            }
+          ],
+          &quot;failureMessages&quot;: [
+            &quot;Error: spawnSync docker ENOENT\n    at Object.spawnSync (internal&#x2F;child_process.js:1077:20)\n    at Object.spawnSync (child_process.js:776:24)\n    at dockerExec (&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio&#x2F;node_modules&#x2F;@aws-cdk&#x2F;core&#x2F;lib&#x2F;bundling.ts:260:16)\n    at Function.fromBuild (&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio&#x2F;node_modules&#x2F;@aws-cdk&#x2F;core&#x2F;lib&#x2F;bundling.ts:159:5)\n    at new Bundling (&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio&#x2F;node_modules&#x2F;@aws-cdk&#x2F;aws-lambda-nodejs&#x2F;lib&#x2F;bundling.ts:96:46)\n    at Function.bundle (&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio&#x2F;node_modules&#x2F;@aws-cdk&#x2F;aws-lambda-nodejs&#x2F;lib&#x2F;bundling.ts:47:17)\n    at new NodejsFunction (&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio&#x2F;node_modules&#x2F;@aws-cdk&#x2F;aws-lambda-nodejs&#x2F;lib&#x2F;function.ts:54:22)\n    at new PantrioBackendStack (&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio&#x2F;cdk&#x2F;pantrio-backend-stack.ts:52:38)\n    at &#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio&#x2F;cdk&#x2F;pantrio-backend-stack.unit.test.ts:39:13\n    at Promise.then.completed (&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio&#x2F;node_modules&#x2F;jest-circus&#x2F;build&#x2F;utils.js:390:28)&quot;
+          ],
+          &quot;fullName&quot;: &quot;An S3 pre-signed url lambda is created&quot;,
+          &quot;invocations&quot;: 1,
+          &quot;location&quot;: null,
+          &quot;numPassingAsserts&quot;: 0,
+          &quot;status&quot;: &quot;failed&quot;,
+          &quot;title&quot;: &quot;An S3 pre-signed url lambda is created&quot;
+        }
+      ],
+      &quot;failureMessage&quot;: &quot;\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mAn S3 pre-signed url lambda is created\u001b[39m\u001b[22m\n\n    spawnSync docker ENOENT\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 50 |\u001b[39m         })\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 51 |\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m\u001b[31m\u001b[1m&gt;\u001b[22m\u001b[2m\u001b[39m\u001b[90m 52 |\u001b[39m         \u001b[36mconst\u001b[39m importRawRecipeImage \u001b[33m&#x3D;\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mNodejsFunction\u001b[39m(\u001b[36mthis\u001b[39m\u001b[33m,\u001b[39m \u001b[32m&#39;ImportRawRecipeImage&#39;\u001b[39m\u001b[33m,\u001b[39m {\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m    |\u001b[39m                                      \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 53 |\u001b[39m             memorySize\u001b[33m:\u001b[39m \u001b[35m256\u001b[39m\u001b[33m,\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 54 |\u001b[39m             timeout\u001b[33m:\u001b[39m cdk\u001b[33m.\u001b[39m\u001b[33mDuration\u001b[39m\u001b[33m.\u001b[39mseconds(\u001b[35m10\u001b[39m)\u001b[33m,\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 55 |\u001b[39m             runtime\u001b[33m:\u001b[39m lambda\u001b[33m.\u001b[39m\u001b[33mRuntime\u001b[39m\u001b[33m.\u001b[39m\u001b[33mNODEJS_14_X\u001b[39m\u001b[33m,\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat dockerExec (\u001b[22m\u001b[2mnode_modules&#x2F;@aws-cdk&#x2F;core&#x2F;lib&#x2F;bundling.ts\u001b[2m:260:16)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Function.fromBuild (\u001b[22m\u001b[2mnode_modules&#x2F;@aws-cdk&#x2F;core&#x2F;lib&#x2F;bundling.ts\u001b[2m:159:5)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat new Bundling (\u001b[22m\u001b[2mnode_modules&#x2F;@aws-cdk&#x2F;aws-lambda-nodejs&#x2F;lib&#x2F;bundling.ts\u001b[2m:96:46)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Function.bundle (\u001b[22m\u001b[2mnode_modules&#x2F;@aws-cdk&#x2F;aws-lambda-nodejs&#x2F;lib&#x2F;bundling.ts\u001b[2m:47:17)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat new NodejsFunction (\u001b[22m\u001b[2mnode_modules&#x2F;@aws-cdk&#x2F;aws-lambda-nodejs&#x2F;lib&#x2F;function.ts\u001b[2m:54:22)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat new PantrioBackendStack (\u001b[22m\u001b[2mcdk&#x2F;pantrio-backend-stack.ts\u001b[2m:52:38)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat \u001b[22m\u001b[2m\u001b[0m\u001b[36mcdk&#x2F;pantrio-backend-stack.unit.test.ts\u001b[39m\u001b[0m\u001b[2m:39:13\u001b[22m\u001b[2m\u001b[22m\n&quot;
+    }
+  ],
   &quot;wasInterrupted&quot;: false
 }</div>
         </div>
@@ -196,10 +255,10 @@
   &quot;listTests&quot;: false,
   &quot;logHeapUsage&quot;: false,
   &quot;maxConcurrency&quot;: 5,
-  &quot;maxWorkers&quot;: 1,
+  &quot;maxWorkers&quot;: 11,
   &quot;noStackTrace&quot;: false,
   &quot;nonFlagArgs&quot;: [
-    &quot;&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio&#x2F;src&#x2F;handlers&#x2F;events&#x2F;recipe-image&#x2F;raw-recipe-image-event.unit.test.ts&quot;
+    &quot;&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio&#x2F;cdk&#x2F;pantrio-backend-stack.unit.test.ts&quot;
   ],
   &quot;notify&quot;: false,
   &quot;notifyMode&quot;: &quot;failure-change&quot;,
@@ -218,7 +277,6 @@
         &quot;resultDir&quot;: &quot;.&#x2F;test&#x2F;jest-stare&#x2F;&quot;,
         &quot;coverageLink&quot;: &quot;..&#x2F;coverage&#x2F;lcov-report&#x2F;index.html&quot;,
         &quot;additionalResultsProcessors&quot;: [],
-        &quot;log&quot;: false,
         &quot;resultHtml&quot;: &quot;index.html&quot;,
         &quot;resultJson&quot;: &quot;jest-results.json&quot;
       }
@@ -228,8 +286,8 @@
   &quot;runTestsByPath&quot;: false,
   &quot;skipFilter&quot;: false,
   &quot;testFailureExitCode&quot;: 1,
-  &quot;testNamePattern&quot;: &quot;GIVEN the handler receives an s3 event\nWHEN textract detects RECIPE text\nTHEN the handler completes successfully&quot;,
-  &quot;testPathPattern&quot;: &quot;&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio&#x2F;src&#x2F;handlers&#x2F;events&#x2F;recipe-image&#x2F;raw-recipe-image-event.unit.test.ts&quot;,
+  &quot;testNamePattern&quot;: &quot;An S3 pre-signed url lambda is created&quot;,
+  &quot;testPathPattern&quot;: &quot;&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio&#x2F;cdk&#x2F;pantrio-backend-stack.unit.test.ts&quot;,
   &quot;testSequencer&quot;: &quot;&#x2F;Users&#x2F;tombilbe&#x2F;extra-curricular&#x2F;funP&#x2F;pantree-io&#x2F;pantrio&#x2F;node_modules&#x2F;jest-config&#x2F;node_modules&#x2F;@jest&#x2F;test-sequencer&#x2F;build&#x2F;index.js&quot;,
   &quot;updateSnapshot&quot;: &quot;new&quot;,
   &quot;useStderr&quot;: false,
