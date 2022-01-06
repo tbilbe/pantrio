@@ -8,7 +8,7 @@ const rules = fs.readFileSync(path.join(__dirname, `node_modules/recipes-parser/
     encoding: 'utf8',
 });
 
-export const parser = new RecipesParser(rules, units, globalUnit);
+export const pantrioParser = new RecipesParser(rules, units, globalUnit);
 
 // const results = parser.getIngredientsFromText(
 //   ["3 cl. fresh raspberries"],

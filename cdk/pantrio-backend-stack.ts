@@ -6,9 +6,10 @@ import * as lambda from '@aws-cdk/aws-lambda';
 import * as apigateway from '@aws-cdk/aws-apigateway';
 import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
 import * as dynamodb from '@aws-cdk/aws-dynamodb';
-import * as sns from '@aws-cdk/aws-sns';
 import * as iam from '@aws-cdk/aws-iam';
-import { SnsEventSource } from '@aws-cdk/aws-lambda-event-sources';
+import { DynamoEventSource } from '@aws-cdk/aws-lambda-event-sources';
+import { StartingPosition } from '@aws-cdk/aws-lambda';
+import { table } from 'console';
 
 export interface PantrioStackProps extends cdk.StackProps {
     stage: string;
@@ -18,9 +19,11 @@ export class PantrioBackendStack extends cdk.Stack {
     constructor(scope: cdk.Construct, id: string, props: PantrioStackProps) {
         super(scope, id, props);
 
-        const recipeTable = new dynamodb.Table(this, `Recipe-${props.stage}`, {
+        const recipeTable = new dynamodb.Table(this, `Table`, {
+            tableName: `Pantrio-table-cdk-${props.stage}`,
             partitionKey: { name: 'pk', type: dynamodb.AttributeType.STRING },
             sortKey: { name: 'sk', type: dynamodb.AttributeType.STRING },
+            stream: dynamodb.StreamViewType.NEW_IMAGE,
         });
 
         const corsRulesForRawImageBkt: s3.CorsRule = {
@@ -45,9 +48,10 @@ export class PantrioBackendStack extends cdk.Stack {
             blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
             cors: [corsRulesForRawImageBkt],
         });
-        const snsTopic = new sns.Topic(this, 'textract-complete-topic', {
-            displayName: 'Textract Completed SNSTopic',
-        });
+
+        // const snsTopic = new sns.Topic(this, 'textract-complete-topic', {
+        //     displayName: 'Textract Completed SNSTopic',
+        // });
 
         const importRawRecipeImage = new NodejsFunction(this, 'ImportRawRecipeImage', {
             memorySize: 256,
@@ -56,14 +60,21 @@ export class PantrioBackendStack extends cdk.Stack {
             handler: 'handler',
             entry: path.join(__dirname, `/../src/handlers/events/recipe-image/index.ts`),
             environment: {
-                SNS_TOPIC_ARN: snsTopic.topicArn,
-                SNS_ROLE_ARN: textractServiceRole.roleArn,
+                TABLE_NAME: recipeTable.tableName,
             },
         });
 
-        snsTopic.grantPublish(textractServiceRole);
+        importRawRecipeImage.addToRolePolicy(
+            new iam.PolicyStatement({
+                actions: ['textract:*'],
+                resources: ['*'],
+            }),
+        );
+
+        // snsTopic.grantPublish(textractServiceRole);
 
         recipeTable.grantReadWriteData(importRawRecipeImage);
+        recipeTable.grant(importRawRecipeImage, 'dynamodb:PutItem');
         rawRecipeImageBucket.grantRead(importRawRecipeImage);
 
         rawRecipeImageBucket.addEventNotification(
@@ -74,7 +85,13 @@ export class PantrioBackendStack extends cdk.Stack {
         const sendTextractToDynamo = new NodejsFunction(this, 'TextractResultLambda', {
             entry: path.join(__dirname, '/../src/handlers/events/textract-result/index.ts'),
         });
-        sendTextractToDynamo.addEventSource(new SnsEventSource(snsTopic));
+
+        sendTextractToDynamo.addEventSource(
+            new DynamoEventSource(recipeTable, {
+                startingPosition: StartingPosition.LATEST,
+                batchSize: 1,
+            }),
+        );
 
         const getSignedUrlToStoreRawImage = new NodejsFunction(this, 'GetSignedUrlToStoreRawImage', {
             handler: 'handler',

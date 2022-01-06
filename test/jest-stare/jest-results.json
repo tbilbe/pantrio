@@ -1,14 +1,14 @@
 {
-  "numFailedTestSuites": 1,
-  "numFailedTests": 1,
-  "numPassedTestSuites": 0,
-  "numPassedTests": 0,
+  "numFailedTestSuites": 0,
+  "numFailedTests": 0,
+  "numPassedTestSuites": 1,
+  "numPassedTests": 1,
   "numPendingTestSuites": 0,
-  "numPendingTests": 0,
+  "numPendingTests": 1,
   "numRuntimeErrorTestSuites": 0,
   "numTodoTests": 0,
   "numTotalTestSuites": 1,
-  "numTotalTests": 1,
+  "numTotalTests": 2,
   "openHandles": [],
   "snapshot": {
     "added": 0,
@@ -26,21 +26,21 @@
     "unmatched": 0,
     "updated": 0
   },
-  "startTime": 1640776052000,
+  "startTime": 1640791461097,
   "success": false,
   "testResults": [
     {
       "leaks": false,
-      "numFailingTests": 1,
-      "numPassingTests": 0,
-      "numPendingTests": 0,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 1,
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "end": 1640776064105,
-        "runtime": 11795,
+        "end": 1640791468258,
+        "runtime": 6875,
         "slow": true,
-        "start": 1640776052310
+        "start": 1640791461383
       },
       "skipped": false,
       "snapshot": {
@@ -52,41 +52,34 @@
         "unmatched": 0,
         "updated": 0
       },
-      "testFilePath": "/Users/tombilbe/extra-curricular/funP/pantree-io/pantrio/cdk/pantrio-backend-stack.unit.test.ts",
+      "testFilePath": "/Users/tombilbe/extra-curricular/funP/pantree-io/pantrio/src/handlers/http/get-stored-textract-result/get-stored-textract-result.unit.test.ts",
       "testResults": [
         {
           "ancestorTitles": [],
-          "duration": 1,
-          "failureDetails": [
-            {
-              "errno": -2,
-              "code": "ENOENT",
-              "syscall": "spawnSync docker",
-              "path": "docker",
-              "spawnargs": [
-                "build",
-                "-t",
-                "cdk-1dfa59a9825664eec8a36d3be2a0ed701919e1652d28fc45385388c8fb7865ea",
-                "--build-arg",
-                "IMAGE=public.ecr.aws/sam/build-nodejs14.x",
-                "--build-arg",
-                "ESBUILD_VERSION=0",
-                "/Users/tombilbe/extra-curricular/funP/pantree-io/pantrio/node_modules/@aws-cdk/aws-lambda-nodejs/lib"
-              ]
-            }
-          ],
-          "failureMessages": [
-            "Error: spawnSync docker ENOENT\n    at Object.spawnSync (internal/child_process.js:1077:20)\n    at Object.spawnSync (child_process.js:776:24)\n    at dockerExec (/Users/tombilbe/extra-curricular/funP/pantree-io/pantrio/node_modules/@aws-cdk/core/lib/bundling.ts:260:16)\n    at Function.fromBuild (/Users/tombilbe/extra-curricular/funP/pantree-io/pantrio/node_modules/@aws-cdk/core/lib/bundling.ts:159:5)\n    at new Bundling (/Users/tombilbe/extra-curricular/funP/pantree-io/pantrio/node_modules/@aws-cdk/aws-lambda-nodejs/lib/bundling.ts:96:46)\n    at Function.bundle (/Users/tombilbe/extra-curricular/funP/pantree-io/pantrio/node_modules/@aws-cdk/aws-lambda-nodejs/lib/bundling.ts:47:17)\n    at new NodejsFunction (/Users/tombilbe/extra-curricular/funP/pantree-io/pantrio/node_modules/@aws-cdk/aws-lambda-nodejs/lib/function.ts:54:22)\n    at new PantrioBackendStack (/Users/tombilbe/extra-curricular/funP/pantree-io/pantrio/cdk/pantrio-backend-stack.ts:52:38)\n    at /Users/tombilbe/extra-curricular/funP/pantree-io/pantrio/cdk/pantrio-backend-stack.unit.test.ts:39:13\n    at Promise.then.completed (/Users/tombilbe/extra-curricular/funP/pantree-io/pantrio/node_modules/jest-circus/build/utils.js:390:28)"
-          ],
-          "fullName": "An S3 pre-signed url lambda is created",
+          "duration": null,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "GIVEN a call to the handler\nWHEN the request does not contain an id\nTHEN the handler throws",
           "invocations": 1,
           "location": null,
           "numPassingAsserts": 0,
-          "status": "failed",
-          "title": "An S3 pre-signed url lambda is created"
+          "status": "pending",
+          "title": "GIVEN a call to the handler\nWHEN the request does not contain an id\nTHEN the handler throws"
+        },
+        {
+          "ancestorTitles": [],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "GIVEN a call to the handler\nWHEN the request succeeds\nTHEN the handler returns ",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "passed",
+          "title": "GIVEN a call to the handler\nWHEN the request succeeds\nTHEN the handler returns "
         }
       ],
-      "failureMessage": "\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mAn S3 pre-signed url lambda is created\u001b[39m\u001b[22m\n\n    spawnSync docker ENOENT\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 50 |\u001b[39m         })\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 51 |\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 52 |\u001b[39m         \u001b[36mconst\u001b[39m importRawRecipeImage \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mNodejsFunction\u001b[39m(\u001b[36mthis\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'ImportRawRecipeImage'\u001b[39m\u001b[33m,\u001b[39m {\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m    |\u001b[39m                                      \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 53 |\u001b[39m             memorySize\u001b[33m:\u001b[39m \u001b[35m256\u001b[39m\u001b[33m,\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 54 |\u001b[39m             timeout\u001b[33m:\u001b[39m cdk\u001b[33m.\u001b[39m\u001b[33mDuration\u001b[39m\u001b[33m.\u001b[39mseconds(\u001b[35m10\u001b[39m)\u001b[33m,\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 55 |\u001b[39m             runtime\u001b[33m:\u001b[39m lambda\u001b[33m.\u001b[39m\u001b[33mRuntime\u001b[39m\u001b[33m.\u001b[39m\u001b[33mNODEJS_14_X\u001b[39m\u001b[33m,\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat dockerExec (\u001b[22m\u001b[2mnode_modules/@aws-cdk/core/lib/bundling.ts\u001b[2m:260:16)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Function.fromBuild (\u001b[22m\u001b[2mnode_modules/@aws-cdk/core/lib/bundling.ts\u001b[2m:159:5)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat new Bundling (\u001b[22m\u001b[2mnode_modules/@aws-cdk/aws-lambda-nodejs/lib/bundling.ts\u001b[2m:96:46)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Function.bundle (\u001b[22m\u001b[2mnode_modules/@aws-cdk/aws-lambda-nodejs/lib/bundling.ts\u001b[2m:47:17)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat new NodejsFunction (\u001b[22m\u001b[2mnode_modules/@aws-cdk/aws-lambda-nodejs/lib/function.ts\u001b[2m:54:22)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat new PantrioBackendStack (\u001b[22m\u001b[2mcdk/pantrio-backend-stack.ts\u001b[2m:52:38)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat \u001b[22m\u001b[2m\u001b[0m\u001b[36mcdk/pantrio-backend-stack.unit.test.ts\u001b[39m\u001b[0m\u001b[2m:39:13\u001b[22m\u001b[2m\u001b[22m\n"
+      "failureMessage": null
     }
   ],
   "wasInterrupted": false

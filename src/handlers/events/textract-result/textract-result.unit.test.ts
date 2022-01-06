@@ -58,7 +58,7 @@ THEN the handler writes back in to dynamo`, async () => {
                         Keys: {
                             pk: { S: 'USER#fake_user_id' },
                             sk: { S: `CREATED#${new Date().toISOString()}` },
-                            rawTextResults: ['hi i am a string'],
+                            rawTextResults: ['hi i am a string', 'and i another string!'],
                         },
                     },
                 },

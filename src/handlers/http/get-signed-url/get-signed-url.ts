@@ -12,6 +12,9 @@ const getUploadURL = async (event: APIGatewayProxyEvent) => {
      using random here for now, want to grab the user id somehow from headers and decode the jwt maybs
     event.headers.auth ? decode the token 
     */
+
+    console.log(JSON.stringify(event, null, 4));
+
     const random = Math.floor(Math.random() * 85000);
     const Key = `${random}_${new Date().toISOString()}.jpg`;
     const URL_EXPIRATION_SECONDS = 30;
