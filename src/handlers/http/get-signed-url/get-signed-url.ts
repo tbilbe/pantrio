@@ -1,7 +1,9 @@
 import { s3Client } from '~helpers/s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
-import { GetObjectCommand, GetObjectCommandInput } from '@aws-sdk/client-s3';
+import { GetObjectCommand, PutObjectCommand, PutObjectCommandInput } from '@aws-sdk/client-s3';
+import { getEnvironmentVariableOrThrow } from '~helpers/utils';
+const bucketName = getEnvironmentVariableOrThrow('BUCKET_NAME');
 
 export const handler: APIGatewayProxyHandler = async (event) => {
     return await getUploadURL(event);
@@ -13,19 +15,27 @@ const getUploadURL = async (event: APIGatewayProxyEvent) => {
     event.headers.auth ? decode the token 
     */
 
-    console.log(JSON.stringify(event, null, 4));
+    // todo
+    /* 
+        grab the event and inside the initial event the photo id should be in there add this 
+        uuid to the 
+    */
 
-    const random = Math.floor(Math.random() * 85000);
-    const Key = `${random}_${new Date().toISOString()}.jpg`;
-    const URL_EXPIRATION_SECONDS = 30;
+    console.log(JSON.stringify(event, null, 4));
+    // event logged out in cloudwatch is lowercase photoid for some reason!
+    const photo = event.headers['photoid'];
+    console.log('🚀 🦄 ~ file: get-signed-url.ts ~ line 25 ~ getUploadURL ~ photo', photo);
+    const Key = `${photo}`;
+    const URL_EXPIRATION_SECONDS = 60;
 
     // Get signed URL from S3
-    const s3Params: GetObjectCommandInput = {
-        Bucket: 'bucketName',
+    const s3Params: PutObjectCommandInput = {
+        Bucket: bucketName,
         Key,
     };
 
-    const command = new GetObjectCommand(s3Params);
+    const command = new PutObjectCommand(s3Params);
+
     const uploadURL = await getSignedUrl(s3Client, command, { expiresIn: URL_EXPIRATION_SECONDS });
 
     const signedURL = JSON.stringify({

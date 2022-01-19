@@ -1,5 +1,7 @@
+// import { PutCommand } from '@aws-sdk/lib-dynamodb';
 import { PutCommand } from '@aws-sdk/lib-dynamodb';
 import { unmarshall } from '@aws-sdk/util-dynamodb';
+import { IRecipeResult } from 'recipes-parser';
 import { dynamoClient } from '~helpers/dynamo';
 import { getEnvironmentVariableOrThrow } from '~helpers/utils';
 import { pantrioParser } from '~services/parser/parse-recipe-ingredients';
@@ -27,24 +29,26 @@ export const handler: DynamoDBStreamHandler = async (event) => {
                 throw new Error('No new image');
             }
 
-            const rawRecipe = unmarshall(image);
+            const { rawRecipe } = unmarshall(image);
             console.log('🚀 ~ file: textract-result.ts ~ line 31 ~ event.Records.map ~ rawRecipe', rawRecipe);
 
             // do the parsing in here!
-            // const parsedRecipeIngredients = parseThis(rawRecipe);
-            // // send to the processed datastore
-            // const processedIngredients = {
-            //     processedIngredients: parsedRecipeIngredients,
-            //     pk,
-            //     sk,
-            // };
+            const parsedRecipeIngredients = parseThis(rawRecipe);
+            console.log('🚧 ', parsedRecipeIngredients, '🚧');
 
-            // await dynamoClient.send(
-            //     new PutCommand({
-            //         TableName: tableName,
-            //         Item: processedIngredients,
-            //     }),
-            // );
+            // send to the processed datastore
+            const processedIngredients = {
+                processedIngredients: parsedRecipeIngredients,
+                pk,
+                sk,
+            };
+
+            await dynamoClient.send(
+                new PutCommand({
+                    TableName: tableName,
+                    Item: processedIngredients,
+                }),
+            );
         });
     } catch (error) {
         throw error;
@@ -55,4 +59,28 @@ const parseThis = (dummyObj: string[]) => {
     const results = pantrioParser.getIngredientsFromText(dummyObj, true);
 
     return results;
+};
+
+interface Recipe {
+    result: {
+        instruction: string;
+        unit: number;
+        amount: string;
+        ingredient: string;
+    };
+    // unknown: {
+    //     instruction?: string;
+    //     reasons?: UNKNOWN_REASONS[];
+    // };
+}
+
+const safeIngredientStorer = (parsedList: IRecipeResult[]): Recipe[] => {
+    const read = parsedList.map((ingredient) => {
+        if (ingredient.result !== null) {
+            return ingredient;
+        }
+    });
+
+    const remove = read.filter((i) => i !== undefined) as Recipe[];
+    return remove;
 };

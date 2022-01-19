@@ -9,7 +9,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     // grab the photo id in the request
     // use the photo id and userId to query dynamo for the result
     try {
-        // const { photoId } = JSON.parse(event.body);
+        console.log('🦄 ', JSON.stringify(event, null, 4));
         const photoId = 'test';
         const res = await dynamoClient.send(
             new QueryCommand({
@@ -23,6 +23,11 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
         if (!res.Items?.length) throw new Error('urgh, we lost the recipe!');
 
+        const resultForFrontEnd = res.Items;
+
+        // do some stuff here! will have the full db object should do some validation on it
+        // do some filtering and remove any unwanted shizz
+
         const respsonse: APIGatewayProxyResult = {
             statusCode: 200,
             body: JSON.stringify(res.Items),
@@ -31,7 +36,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
         return respsonse;
     } catch (error) {
         const errResponse: APIGatewayProxyResult = {
-            statusCode: 200,
+            statusCode: 400,
             body: JSON.stringify(error, null, 4),
         };
 

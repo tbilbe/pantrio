@@ -1,6 +1,6 @@
 import { APIGatewayProxyEvent } from 'aws-lambda/trigger/api-gateway-proxy';
 import { mock } from 'jest-mock-extended';
-import { handler } from './get-stored-textract-result';
+import { handler } from './get-ingredients-result';
 
 const createMockEvent = (body: Record<string, unknown> = {}): APIGatewayProxyEvent => {
     return {

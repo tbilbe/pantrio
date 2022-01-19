@@ -7,9 +7,6 @@ import * as apigateway from '@aws-cdk/aws-apigateway';
 import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
 import * as dynamodb from '@aws-cdk/aws-dynamodb';
 import * as iam from '@aws-cdk/aws-iam';
-import { DynamoEventSource } from '@aws-cdk/aws-lambda-event-sources';
-import { StartingPosition } from '@aws-cdk/aws-lambda';
-import { table } from 'console';
 
 export interface PantrioStackProps extends cdk.StackProps {
     stage: string;
@@ -20,10 +17,8 @@ export class PantrioBackendStack extends cdk.Stack {
         super(scope, id, props);
 
         const recipeTable = new dynamodb.Table(this, `Table`, {
-            tableName: `Pantrio-table-cdk-${props.stage}`,
+            tableName: `Pantrio-table-${props.stage}`,
             partitionKey: { name: 'pk', type: dynamodb.AttributeType.STRING },
-            sortKey: { name: 'sk', type: dynamodb.AttributeType.STRING },
-            stream: dynamodb.StreamViewType.NEW_IMAGE,
         });
 
         const corsRulesForRawImageBkt: s3.CorsRule = {
@@ -43,17 +38,14 @@ export class PantrioBackendStack extends cdk.Stack {
         policyStatement.addResources('*');
         textractServiceRole.addToPolicy(policyStatement);
 
-        const rawRecipeImageBucket = new s3.Bucket(this, 'RawRecipeBucket', {
-            bucketName: `pantrio-raw-recipe-images-${props.stage}`,
+        const rawRecipesBucket = new s3.Bucket(this, 'RawRecipesBucket', {
+            bucketName: `pantrio-raw-recipes-${props.stage}`,
             blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
             cors: [corsRulesForRawImageBkt],
         });
 
-        // const snsTopic = new sns.Topic(this, 'textract-complete-topic', {
-        //     displayName: 'Textract Completed SNSTopic',
-        // });
-
-        const importRawRecipeImage = new NodejsFunction(this, 'ImportRawRecipeImage', {
+        const processRawRecipeImage = new NodejsFunction(this, 'processRawRecipeImage', {
+            functionName: `${this.stackName}-ProcessRawRecipeImage`,
             memorySize: 256,
             timeout: cdk.Duration.seconds(10),
             runtime: lambda.Runtime.NODEJS_14_X,
@@ -64,53 +56,70 @@ export class PantrioBackendStack extends cdk.Stack {
             },
         });
 
-        importRawRecipeImage.addToRolePolicy(
+        processRawRecipeImage.addToRolePolicy(
             new iam.PolicyStatement({
                 actions: ['textract:*'],
                 resources: ['*'],
             }),
         );
 
-        // snsTopic.grantPublish(textractServiceRole);
+        recipeTable.grantReadWriteData(processRawRecipeImage);
+        recipeTable.grant(processRawRecipeImage, 'dynamodb:PutItem');
+        rawRecipesBucket.grantRead(processRawRecipeImage);
 
-        recipeTable.grantReadWriteData(importRawRecipeImage);
-        recipeTable.grant(importRawRecipeImage, 'dynamodb:PutItem');
-        rawRecipeImageBucket.grantRead(importRawRecipeImage);
-
-        rawRecipeImageBucket.addEventNotification(
+        rawRecipesBucket.addEventNotification(
             s3.EventType.OBJECT_CREATED,
-            new s3n.LambdaDestination(importRawRecipeImage),
+            new s3n.LambdaDestination(processRawRecipeImage),
         );
 
-        const sendTextractToDynamo = new NodejsFunction(this, 'TextractResultLambda', {
-            entry: path.join(__dirname, '/../src/handlers/events/textract-result/index.ts'),
-        });
-
-        sendTextractToDynamo.addEventSource(
-            new DynamoEventSource(recipeTable, {
-                startingPosition: StartingPosition.LATEST,
-                batchSize: 1,
-            }),
-        );
-
-        const getSignedUrlToStoreRawImage = new NodejsFunction(this, 'GetSignedUrlToStoreRawImage', {
+        const getUrlForRecipeUploadLambda = new NodejsFunction(this, 'GetUrlForRecipeUploadLambda', {
+            functionName: `${this.stackName}-GetUrlForRecipeUploadLambda`,
             handler: 'handler',
             entry: path.join(__dirname, `/../src/handlers/http/get-signed-url/index.ts`),
+            environment: {
+                BUCKET_NAME: rawRecipesBucket.bucketName,
+            },
         });
 
-        const getStoredTextractResult = new NodejsFunction(this, 'GetStoredTextractResult', {
+        rawRecipesBucket.grantPut(getUrlForRecipeUploadLambda);
+
+        const getIngredientsResult = new NodejsFunction(this, 'GetIngredientsResult', {
+            functionName: `${this.stackName}-GetIngredientsResult`,
             handler: 'handler',
             runtime: lambda.Runtime.NODEJS_14_X,
             memorySize: 256,
-            entry: path.join(__dirname, `/../src/handlers/http/get-stored-textract-result/index.ts`),
+            entry: path.join(__dirname, `/../src/handlers/http/get-ingredients-result/index.ts`),
         });
+
+        recipeTable.grantReadWriteData(getIngredientsResult);
+
+        const updateIngredientsMeta = new NodejsFunction(this, 'UpdateIngredientsMeta', {
+            functionName: `${this.stackName}-UpdateIngredientsMeta`,
+            handler: 'handler',
+            runtime: lambda.Runtime.NODEJS_14_X,
+            memorySize: 256,
+            entry: path.join(__dirname, `/../src/handlers/http/update-ingredients-meta/index.ts`),
+            environment: {
+                TABLE_NAME: recipeTable.tableName,
+            },
+        });
+
+        recipeTable.grantReadWriteData(updateIngredientsMeta);
 
         const api = new apigateway.RestApi(this, 'PantrioApi', {
             restApiName: 'Recipe Service',
             description: 'this service provides access to recipe storage and parsing',
         });
 
-        api.root.addResource('s3').addMethod('GET', new apigateway.LambdaIntegration(getSignedUrlToStoreRawImage));
-        api.root.addResource('recipe').addMethod('GET', new apigateway.LambdaIntegration(getStoredTextractResult));
+        //1. presigned url
+        api.root.addResource('s3').addMethod('GET', new apigateway.LambdaIntegration(getUrlForRecipeUploadLambda));
+        //2. update meta ingredients for a complete recipe item
+        const updateIngredients = api.root.addResource('updateIngredients');
+        const updateMeta = updateIngredients.addResource('{photoid}');
+        updateMeta.addMethod('POST', new apigateway.LambdaIntegration(updateIngredientsMeta)); //put method?
+        //3. get ingredients from textract result
+        const ingredients = api.root.addResource('ingredients');
+        const singleRecipeIngredientsResult = ingredients.addResource('{photoid}');
+        singleRecipeIngredientsResult.addMethod('GET', new apigateway.LambdaIntegration(getIngredientsResult));
     }
 }
