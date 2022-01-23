@@ -5,9 +5,13 @@ import { parse } from 'recipe-ingredient-parser-v3';
 import { units } from './units';
 import { globalUnit } from './glabal_unit';
 
-// const rules = fs.readFileSync(path.join(__dirname, `./rules.pegjs`), {
+// const rules = fs.readFileSync(path.join(__dirname, `src/services/parser/rules.pegjs`), {
 //     encoding: 'utf8',
 // });
+
+// console.log('dir name', __dirname);
+
+// console.log(rules);
 // export const pantrioParser = new RecipesParser(rules, units, globalUnit);
 // const ingreds = [
 //     'Ingredients',

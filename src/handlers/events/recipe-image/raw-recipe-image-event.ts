@@ -5,7 +5,7 @@
 import { DetectDocumentTextCommand } from '@aws-sdk/client-textract';
 import { textractClient } from '~helpers/textract';
 import { S3Handler } from 'aws-lambda';
-import textractParser, { BlockType, Document } from '@briancullen/aws-textract-parser';
+import { BlockType } from '@briancullen/aws-textract-parser';
 import { dynamoDocClient } from '~helpers/dynamo';
 import { PutCommand } from '@aws-sdk/lib-dynamodb';
 import { getEnvironmentVariableOrThrow } from '~helpers/utils';
@@ -45,11 +45,27 @@ export const handler: S3Handler = async (event) => {
         const filteredRes = rawResults.filter(Boolean) as string[];
 
         // const tryParsingRecipeIngredients = pantrioParser.getIngredientsFromText(filteredRes, true);
-        const tryParsingRecipeIngredients = pantrioParserV2(filteredRes);
+        const tryParsingRecipeIngredientsV2 = pantrioParserV2(filteredRes);
 
         // validation around stuffs here!
 
-        const mappedIngredients = tryParsingRecipeIngredients.map((el) => {
+        // const validatedParsingV1 = tryParsingRecipeIngredients.map((el) => {
+        //     if (el.result && el.result.instruction) {
+        //         return {
+        //             instruction: el.result.instruction,
+        //             unit: el.result.unit,
+        //             amount: el.result.amount,
+        //             ingredient: el.result.ingredient,
+        //         };
+        //     } else {
+        //         return {
+        //             unknownKey: 'parsed value not readable by parser V1',
+        //             instruction: el.unknown.instruction,
+        //         };
+        //     }
+        // });
+
+        const vslidatedParsingV2 = tryParsingRecipeIngredientsV2.map((el) => {
             if (el.parsed.ingredient.length > 0) {
                 return {
                     instruction: el.rawIngredientString,
@@ -59,7 +75,7 @@ export const handler: S3Handler = async (event) => {
                 };
             } else {
                 return {
-                    unknownKey: 'parsed value not readable by parser',
+                    unknownKey: 'parsed value not readable by parser V2',
                     instruction: el.rawIngredientString,
                 };
             }
@@ -71,7 +87,8 @@ export const handler: S3Handler = async (event) => {
                 Item: {
                     pk: `RECIPE#${photoId}`,
                     rawTextResults: rawResults,
-                    mappedIngredients: mappedIngredients,
+                    // pantrioIngredients: validatedParsingV1,
+                    pantrioIngredientsV2: vslidatedParsingV2,
                 },
             }),
         );

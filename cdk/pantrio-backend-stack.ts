@@ -89,6 +89,9 @@ export class PantrioBackendStack extends cdk.Stack {
             runtime: lambda.Runtime.NODEJS_14_X,
             memorySize: 256,
             entry: path.join(__dirname, `/../src/handlers/http/get-ingredients-result/index.ts`),
+            environment: {
+                TABLE_NAME: recipeTable.tableName,
+            },
         });
 
         recipeTable.grantReadWriteData(getIngredientsResult);
