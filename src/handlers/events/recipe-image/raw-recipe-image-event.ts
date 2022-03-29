@@ -13,10 +13,16 @@ import { pantrioParserV2 } from '~services/parser/parse-recipe-ingredients';
 
 const tableName = getEnvironmentVariableOrThrow('TABLE_NAME');
 
-export const handler: S3Handler = async (event) => {
+export const handler: S3Handler = async (event, context) => {
     try {
         console.log('✏️ event ->', JSON.stringify(event, null, 4));
         const { bucket, object } = event.Records[0].s3;
+
+        console.log(
+            '🚀 ~ file: raw-recipe-image-event.ts ~ line 21 ~ consthandler:S3Handler= ~ bucket, object',
+            bucket,
+            object,
+        );
 
         const output = await textractClient.send(
             new DetectDocumentTextCommand({
@@ -37,7 +43,9 @@ export const handler: S3Handler = async (event) => {
                 }
             }
         }
-        const photoId = object.key;
+        const recipeIdBlob = object.key;
+        /** <userId>/<new Date.toISOString()>/photoId */
+        const [userId, photoId] = recipeIdBlob.split('/');
 
         // try parsing the results here...
 
@@ -65,13 +73,13 @@ export const handler: S3Handler = async (event) => {
         //     }
         // });
 
-        const vslidatedParsingV2 = tryParsingRecipeIngredientsV2.map((el) => {
-            if (el.parsed.ingredient.length > 0) {
+        const validatedParsingV2 = tryParsingRecipeIngredientsV2.map((el) => {
+            if (el.quantity && el.unit) {
                 return {
                     instruction: el.rawIngredientString,
-                    unit: el.parsed.unit,
-                    amount: el.parsed.quantity,
-                    ingredient: el.parsed.ingredient,
+                    unit: el.unit,
+                    amount: el.quantity,
+                    ingredient: el.ingredient,
                 };
             } else {
                 return {
@@ -81,14 +89,17 @@ export const handler: S3Handler = async (event) => {
             }
         });
 
+        console.log('sending to dynamo 👋🏽');
+
         await dynamoDocClient.send(
             new PutCommand({
                 TableName: tableName,
                 Item: {
-                    pk: `RECIPE#${photoId}`,
+                    pk: `USER#${userId}`,
+                    sk: `PHOTOID#${photoId}`,
+                    createdDate: new Date().toISOString(),
                     rawTextResults: rawResults,
-                    // pantrioIngredients: validatedParsingV1,
-                    pantrioIngredientsV2: vslidatedParsingV2,
+                    parsedIngredients: validatedParsingV2,
                 },
             }),
         );

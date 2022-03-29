@@ -5,28 +5,27 @@ import { getEnvironmentVariableOrThrow } from '~helpers/utils';
 
 const tableName = getEnvironmentVariableOrThrow('TABLE_NAME');
 
-export const handler: APIGatewayProxyHandlerV2 = async (event) => {
+export const handler: APIGatewayProxyHandler = async (event) => {
     try {
-        console.log('🍌 ->', JSON.stringify(event, null, 4));
+        console.log('🍔 🍎 ->', JSON.stringify(event, null, 4));
+
+        if (!event) {
+            throw new Error('no event');
+        }
 
         if (!event.body) {
             throw new Error('no body in request!');
         }
-        // const { title, id, ingredients, mealTime, cuisine } = JSON.parse(event.body);
+        if (!event.headers['photoId']) {
+            throw new Error('no photo id in headers');
+        }
+        const userId = event.requestContext.authorizer?.sub ?? event.requestContext.authorizer?.username;
         const recipeMeta = JSON.parse(event.body);
-        console.log(
-            '🚀 ~ file: update-ingredients-meta.ts ~ line 16 ~ consthandler:APIGatewayProxyHandlerV2= ~ recipeMeta',
-            recipeMeta,
-            event.body,
-        );
-        const { photoid } = event.pathParameters as Record<string, unknown>;
+        const photoId = event.headers['photoid'];
         console.log(
             '🚀 ~ file: update-ingredients-meta.ts ~ line 21 ~ consthandler:APIGatewayProxyHandlerV2= ~ photoid',
-            photoid,
+            photoId,
         );
-        if (!photoid) {
-            throw new Error('no photo id in path params');
-        }
 
         if (!recipeMeta) {
             throw new Error('no recipe metaData');
@@ -36,7 +35,8 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
             new UpdateCommand({
                 TableName: tableName,
                 Key: {
-                    pk: `RECIPE#${photoid}`,
+                    pk: `USER#${userId}`,
+                    sk: `PHOTOID#${photoId}`,
                 },
                 UpdateExpression: 'set #meta = :value',
                 ExpressionAttributeNames: {
@@ -50,7 +50,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
         );
 
         const successResponse = {
-            message: `updated ${photoid}`,
+            message: `updated ${photoId}`,
             body: recipeMeta,
         };
 

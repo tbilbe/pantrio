@@ -1,6 +1,6 @@
 import { QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
-import { dynamoClient, dynamoDocClient } from '~helpers/dynamo';
+import { dynamoDocClient } from '~helpers/dynamo';
 import { getEnvironmentVariableOrThrow } from '~helpers/utils';
 const tableName = getEnvironmentVariableOrThrow('TABLE_NAME');
 
@@ -28,65 +28,68 @@ type Recipe = {
 };
 
 export const handler: APIGatewayProxyHandler = async (event) => {
-    // grab the userId from the event header
-    // grab the photo id in the request
-    // use the photo id and userId to query dynamo for the result
     try {
-        console.log('🦄 ', JSON.stringify(event, null, 4));
-        const { photoid } = event.pathParameters as Record<string, unknown>;
-        console.log(
-            '🚀 ~ file: get-ingredients-result.ts ~ line 37 ~ consthandler:APIGatewayProxyHandler= ~ photoId',
-            photoid,
-        );
+        console.log('🦄 get ingredients result 🦄', JSON.stringify(event, null, 4));
+        if (!event.headers.photoid) throw new Error('no photo id header value');
+        const photoId = event.headers['photoid'] ?? event.headers['photoId'];
 
-        const res = await dynamoClient.send(
-            new QueryCommand({
-                TableName: tableName,
-                KeyConditionExpression: '#id = :value',
-                ExpressionAttributeValues: {
-                    ':value': `RECIPE#${photoid}`,
-                },
-                ExpressionAttributeNames: { '#id': 'pk' },
-            }),
-        );
+        const userId = event.requestContext.authorizer?.sub ?? event.requestContext.authorizer?.username;
+        console.log('🦁, 📸', userId, photoId);
+        const params = {
+            TableName: tableName,
+            KeyConditionExpression: 'pk = :user And sk = :photo',
+            ExpressionAttributeValues: {
+                ':user': `USER#${userId}`,
+                ':photo': `PHOTOID#${photoId}`,
+            },
+            ScanIndexForward: false,
+        };
 
-        console.log('🚀 ~ file: get-ingredients-result.ts ~ line 52 ~ consthandler:APIGatewayProxyHandler= ~ res', res);
+        // 'from work bench'
+        // const p2 = {
+        //     TableName: 'Pantrio-table-dev',
+        //     ScanIndexForward: true,
+        //     ConsistentRead: false,
+        //     KeyConditionExpression: '#bef90 = :bef90 And #bef91 = :bef91',
+        //     ExpressionAttributeValues: {
+        //         ':bef90': {
+        //             S: 'USER#5f1d5761-bcb2-44b2-9a95-ef6943fd19be',
+        //         },
+        //         ':bef91': {
+        //             S: 'PHOTOID#c4638e94-ceef-4cb4-815f-02b2952c05f5.jpg',
+        //         },
+        //     },
+        //     ExpressionAttributeNames: {
+        //         '#bef90': 'pk',
+        //         '#bef91': 'sk',
+        //     },
+        // };
+        console.log('🐎', params);
+        const res = await dynamoDocClient.send(new QueryCommand(params));
+        console.log('🚀 ~ file: get-ingredients-result.ts ~ line 67 ~ consthandler:APIGatewayProxyHandler= ~ res', res);
 
-        if (!res.Items?.length) throw new Error('urgh, we lost the recipe!');
+        if (!res.Items) throw new Error('urgh, we lost the recipe!');
 
-        const resultForFrontEnd = res.Items as unknown as Recipe[];
-        console.log(
-            '🚀 ~ file: get-ingredients-result.ts ~ line 58 ~ consthandler:APIGatewayProxyHandler= ~ resultForFrontEnd',
-            resultForFrontEnd,
-        );
+        const resultForFrontEnd = res.Items;
 
         // do some stuff here! will have the full db object should do some validation on it
         // do some filtering and remove any unwanted shizz
 
         // const rawResult = resultForFrontEnd[0].rawTextResults; // not used yet!
-        const ingredients = resultForFrontEnd[0].pantrioIngredientsV2;
-        console.log(
-            '🚀 ~ file: get-ingredients-result.ts ~ line 64 ~ consthandler:APIGatewayProxyHandler= ~ ingredients',
-            ingredients,
-        );
+        const ingredients = resultForFrontEnd[0];
 
-        const validIngredients = ingredients.map((el) => {
-            if (el.amount > 0 && el.unit) {
-                return el;
-            } else {
-                // need more validation but if no amount then check the raw results block
-                return {
-                    instruction: el.instruction,
-                    unknownValue: true,
-                };
-            }
-        });
+        // do some really dumb parsing here...
 
-        console.log('validated ->', JSON.stringify(validIngredients, null, 4));
+        // const dumbParse = pantrioParserV2(ingredients.rawTextResults);
+
+        const mapping = {
+            rawTextResults: ingredients.rawTextResults,
+            parsed: ingredients.parsedIngredients,
+        };
 
         const response: APIGatewayProxyResult = {
             statusCode: 200,
-            body: JSON.stringify(validIngredients),
+            body: JSON.stringify(mapping),
         };
         return response;
     } catch (error) {
@@ -98,11 +101,4 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     }
 };
 
-// const validCheck = (el: Ingredient) => {
-//     if (el.amount > 0 && el.unit !== null) {
-//         // we def have something
-//         return el;
-//     } else if (el.amount === 0 && el.unit) {
-//         // we have something but not sure!
-//     }
-// }
+const dumbParse = (wordsList: string[]) => {};

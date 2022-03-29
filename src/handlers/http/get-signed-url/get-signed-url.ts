@@ -10,21 +10,13 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 };
 
 const getUploadURL = async (event: APIGatewayProxyEvent) => {
-    /*
-     using random here for now, want to grab the user id somehow from headers and decode the jwt maybs
-    event.headers.auth ? decode the token 
-    */
+    console.log('🍌 ->', JSON.stringify(event, null, 4));
 
-    // todo
-    /* 
-        grab the event and inside the initial event the photo id should be in there add this 
-        uuid to the 
-    */
-
-    console.log(JSON.stringify(event, null, 4));
+    const userId = event.requestContext.authorizer?.sub ?? event.requestContext.authorizer?.username;
     const photo = event.headers['photoid'];
-    const Key = `${photo}`;
-    const URL_EXPIRATION_SECONDS = 300;
+
+    const Key = `${userId}/${photo}`;
+    const URL_EXPIRATION_SECONDS = 60;
 
     // Get signed URL from S3
     const s3Params: PutObjectCommandInput = {

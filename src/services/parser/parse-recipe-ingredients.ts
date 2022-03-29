@@ -31,10 +31,10 @@ import { globalUnit } from './glabal_unit';
 
 export const pantrioParserV2 = (rawIngredientList: string[]) => {
     const buildParsed = rawIngredientList.map((el) => {
-        const parsed = parse(el, 'eng');
+        // const parsed =
         return {
             rawIngredientString: el,
-            parsed,
+            ...parse(el, 'eng'),
         };
     });
     return buildParsed;

@@ -11,6 +11,7 @@ const stackProps: PantrioStackProps = {
         account: '110308496740',
         region: 'eu-west-1',
     },
+    jwksEndpoint: `https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_cg6JmiwED/.well-known/jwks.json`,
 };
 
 new PantrioBackendStack(app, 'PantrioBackendStack', stackProps);
