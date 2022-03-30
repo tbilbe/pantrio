@@ -7,28 +7,36 @@ const tableName = getEnvironmentVariableOrThrow('TABLE_NAME');
 
 export const handler: APIGatewayProxyHandler = async (event) => {
     try {
-        if (!event.headers.Authorization) throw new Error('no auth headers');
+        const userId = event.requestContext.authorizer?.sub ?? event.requestContext.authorizer?.username;
+
+        if (!userId) throw new Error('invalid user id');
         console.log('👨🏽‍🍳 event 🦄', JSON.stringify(event, null, 4));
+
+        console.log('got here!');
 
         const res = await dynamoClient.send(
             new QueryCommand({
                 TableName: tableName,
                 KeyConditionExpression: '#user = :user',
                 ExpressionAttributeValues: {
-                    ':user': `USER#testUser`,
+                    ':user': `USER#${userId}`,
                 },
                 ExpressionAttributeNames: { '#user': 'pk' },
             }),
         );
 
-        const recipeTitles = res.Items?.map((el) => ({
-            title: el.recipeMeta.title,
-            id: el.sk.split('#')[1],
-        }));
+        console.log('got here! 2');
+
+        // const recipeTitles = res.Items?.map((el) => ({
+        //     title: el.recipeMeta.title,
+        //     id: el.sk.split('#')[1],
+        // }));
+
+        console.log('got here!');
 
         const response: APIGatewayProxyResult = {
             statusCode: 200,
-            body: JSON.stringify(recipeTitles),
+            body: JSON.stringify(res.Items),
         };
         return response;
     } catch (error) {
