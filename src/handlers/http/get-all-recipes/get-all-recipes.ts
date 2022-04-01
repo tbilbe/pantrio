@@ -12,31 +12,61 @@ export const handler: APIGatewayProxyHandler = async (event) => {
         if (!userId) throw new Error('invalid user id');
         console.log('👨🏽‍🍳 event 🦄', JSON.stringify(event, null, 4));
 
-        console.log('got here!');
+        const allRecipes = [];
 
-        const res = await dynamoClient.send(
+        const userRecipesResponse = await dynamoClient.send(
             new QueryCommand({
                 TableName: tableName,
-                KeyConditionExpression: '#user = :user',
+                KeyConditionExpression: 'pk = :user',
                 ExpressionAttributeValues: {
                     ':user': `USER#${userId}`,
                 },
-                ExpressionAttributeNames: { '#user': 'pk' },
             }),
         );
 
-        console.log('got here! 2');
+        // if initial query comes back and is less than 5 recipes keep the initial in the lambda
+        if (userRecipesResponse.Items && userRecipesResponse.Items.length < 5) {
+            const initialRecipesResponse = await dynamoClient.send(
+                new QueryCommand({
+                    TableName: tableName,
+                    KeyConditionExpression: 'pk = :initialRecipes',
+                    ExpressionAttributeValues: {
+                        ':initialRecipes': `INITIAL_RECIPES`,
+                    },
+                }),
+            );
 
-        // const recipeTitles = res.Items?.map((el) => ({
-        //     title: el.recipeMeta.title,
-        //     id: el.sk.split('#')[1],
-        // }));
+            if (initialRecipesResponse.Items) {
+                console.log(
+                    '🚀 ~ file: get-all-recipes.ts ~ line 44 ~ consthandler:APIGatewayProxyHandler= ~ initialRecipesResponse.Items',
+                    initialRecipesResponse.Items,
+                );
+                allRecipes.push(...initialRecipesResponse.Items);
+            }
+        }
 
-        console.log('got here!');
+        if (userRecipesResponse.Items) {
+            console.log(
+                '🚀 ~ file: get-all-recipes.ts ~ line 49 ~ consthandler:APIGatewayProxyHandler= ~ userRecipesResponse.Items',
+                userRecipesResponse.Items,
+            );
+            allRecipes.push(...userRecipesResponse.Items);
+            console.log(
+                '🚀 ~ file: get-all-recipes.ts ~ line 51 ~ consthandler:APIGatewayProxyHandler= ~ allRecipes',
+                allRecipes,
+            );
+        }
+
+        // do some validation here on allRecipes to check they have an id and title
+        const validRecipes = allRecipes.filter((el) => el.id && el.title);
+        console.log(
+            '🚀 ~ file: get-all-recipes.ts ~ line 54 ~ consthandler:APIGatewayProxyHandler= ~ validRecipes',
+            validRecipes,
+        );
 
         const response: APIGatewayProxyResult = {
             statusCode: 200,
-            body: JSON.stringify(res.Items),
+            body: JSON.stringify(validRecipes),
         };
         return response;
     } catch (error) {
