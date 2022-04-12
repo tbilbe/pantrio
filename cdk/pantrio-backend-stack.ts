@@ -190,6 +190,18 @@ export class PantrioBackendStack extends cdk.Stack {
 
         recipeTable.grantReadWriteData(getIngredientsResult);
 
+        const getInitialPantrioState = new NodejsFunction(this, 'GetInitialPantrioState', {
+            functionName: `${this.stackName}-GetInitialPantrioState`,
+            handler: 'handler',
+            runtime: lambda.Runtime.NODEJS_14_X,
+            memorySize: 256,
+            entry: path.join(__dirname, `/../src/handlers/http/get-initial-state/index.ts`),
+            environment: {
+                TABLE_NAME: recipeTable.tableName,
+            },
+        });
+        recipeTable.grantReadData(getInitialPantrioState);
+
         const updateIngredientsMeta = new NodejsFunction(this, 'UpdateIngredientsMeta', {
             functionName: `${this.stackName}-UpdateIngredientsMeta`,
             handler: 'handler',
@@ -300,6 +312,14 @@ export class PantrioBackendStack extends cdk.Stack {
         });
         /** /ingredients */
         const ingredients = api.root.addResource('ingredients');
+
+        // get initial data for first load
+        /** GET /ingredients/initial-load */
+        const loadInitialState = ingredients.addResource('load-initial-state');
+        loadInitialState.addMethod('GET', new apigateway.LambdaIntegration(getInitialPantrioState), {
+            authorizer: customAuthorizer,
+        });
+
         //2. update meta ingredients for a complete recipe item
         /** POST /ingredients/update-ingredients-metadata */
         const updateIngredients = ingredients.addResource('update-ingredients-metadata');
