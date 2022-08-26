@@ -95,8 +95,8 @@ export const handler: S3Handler = async (event, context) => {
             new PutCommand({
                 TableName: tableName,
                 Item: {
-                    pk: 'RECIPE_ITEM',
-                    sk: `${userId}`,
+                    pk: `RECIPE_ITEM/${userId}`,
+                    sk: new Date().toISOString(),
                     photoId: `PHOTOID/${photoId}`,
                     createdDate: new Date().toISOString(),
                     rawTextResults: rawResults,

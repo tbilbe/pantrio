@@ -15,10 +15,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
         const userRecipesResponse = await dynamoClient.send(
             new QueryCommand({
                 TableName: tableName,
-                KeyConditionExpression: 'pk = :recipe AND sk = :user',
+                KeyConditionExpression: 'pk = :userRecipes',
                 ExpressionAttributeValues: {
-                    ':recipe': 'RECIPE_ITEM',
-                    ':user': `${userId}`,
+                    ':userRecipes': `RECIPE_ITEM/${userId}`,
                 },
             }),
         );
@@ -57,10 +56,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
         const userShoppingListResponse = await dynamoClient.send(
             new QueryCommand({
                 TableName: tableName,
-                KeyConditionExpression: 'pk = :shoppingList AND sk = :user',
+                KeyConditionExpression: 'pk = :userShoppingLists',
                 ExpressionAttributeValues: {
-                    ':shoppingList': `SHOPPING_LIST_ITEM`,
-                    ':user': `${userId}`,
+                    ':userShoppingLists': `SHOPPING_LIST_ITEM/${userId}`,
                 },
             }),
         );

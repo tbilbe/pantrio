@@ -37,10 +37,10 @@ export const handler: APIGatewayProxyHandler = async (event) => {
         console.log('🦁, 📸', userId, photoId);
         const params = {
             TableName: tableName,
-            KeyConditionExpression: 'pk = :user And sk = :photo',
+            KeyConditionExpression: 'pk = :RECIPE_ITEM And sk = :user',
             ExpressionAttributeValues: {
-                ':user': `USER#${userId}`,
-                ':photo': `PHOTOID#${photoId}`,
+                ':RECIPE_ITEM': `RECIPE_ITEM`,
+                ':user': `${userId}`,
             },
             ScanIndexForward: false,
         };

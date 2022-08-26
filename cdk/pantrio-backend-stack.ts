@@ -241,6 +241,19 @@ export class PantrioBackendStack extends cdk.Stack {
 
         rawRecipesBucket.grantPut(handlePostRawRecipeImage);
 
+        const handlePostShoppingList = new NodejsFunction(this, 'HandlePostShoppingList', {
+            functionName: `${this.stackName}-HandlePostShoppingList`,
+            handler: 'handler',
+            runtime: lambda.Runtime.NODEJS_14_X,
+            memorySize: 256,
+            entry: path.join(__dirname, `/../src/handlers/http/shopping-list/post-shopping-list/index.ts`),
+            environment: {
+                TABLE_NAME: recipeTable.tableName,
+            },
+        });
+
+        recipeTable.grantWriteData(handlePostShoppingList);
+
         //Auth lambdas
 
         const userSignUp = new NodejsFunction(this, 'UserSignUp', {
@@ -312,6 +325,8 @@ export class PantrioBackendStack extends cdk.Stack {
         });
         /** /ingredients */
         const ingredients = api.root.addResource('ingredients');
+        /** /shopping-lists */
+        const shoppingLists = api.root.addResource('shopping-lists');
 
         // get initial data for first load
         /** GET /ingredients/initial-load */
@@ -338,6 +353,13 @@ export class PantrioBackendStack extends cdk.Stack {
         /** GET /recipes/get-all-recipes */
         const getAllRecipes = ingredients.addResource('get-all-recipes');
         getAllRecipes.addMethod('GET', new apigateway.LambdaIntegration(getAllRecipesLambda), {
+            authorizer: customAuthorizer,
+        });
+
+        //5. post shopping list
+        /** POST /shopping-list/post-shopping-list */
+        const postShoppingList = ingredients.addResource('post-shopping-list');
+        postShoppingList.addMethod('POST', new apigateway.LambdaIntegration(handlePostShoppingList), {
             authorizer: customAuthorizer,
         });
     }
